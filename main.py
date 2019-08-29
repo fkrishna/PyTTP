@@ -1,9 +1,9 @@
-#from core import PyTTP
+from core.pyttp import PyTTP
 
 entrypoint = 'https://www.tutorialspoint.com/html/index.htm'
 
 def run():
-    print('hello world')
+    PyTTP()
 
 if __name__ == "__main__":
     run()

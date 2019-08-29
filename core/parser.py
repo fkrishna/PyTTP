@@ -1,0 +1,60 @@
+import bs4
+import core.client as client
+import core.utils as utils
+import core.config as config
+import core.exceptions as exceptions
+
+class Parser:
+
+    """ DOM Parser """
+
+    @staticmethod
+    def parse(url, el):
+
+        """ Parse a specific element from HTML document of a given url
+
+            Args:
+                url (str): url of any readable tutorial 
+                from https://www.tutorialspoint.com 
+
+                el (str): element that need to be parsed: (head, chapters, content)
+            
+            Returns:
+                Fn: 
+        """
+
+        switcher = {
+            'head': Parser.__get_head,
+            'chapters': Parser.__get_chapters
+        } 
+
+        try:
+            response = client.get(url, {'User-Agent': config.USER_AGENT})
+        except Exception as e:
+            print(e)
+        else:
+            soup = bs4.BeautifulSoup(response.content, 'html.parser')  
+            fn = switcher.get(el) 
+            return fn(soup)
+            
+    @staticmethod
+    def __get_head(soup):
+        return soup.find_all(['style', 'link']) 
+    
+    @staticmethod
+    def __get_chapters(soup):
+
+        """
+
+        """
+
+        uls = soup.find_all(lambda tag: tag.name == 'ul' and utils.is_iterable(tag.get('class')) and \
+        ' '.join(tag.get('class')) in config.CHAP_HTML_CLASSES) 
+        
+        if not uls: raise exceptions.ParserError('Not a valid entry point')
+        return uls    
+    
+    
+  
+
+                
