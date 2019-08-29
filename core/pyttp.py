@@ -13,7 +13,9 @@ class PyTTP:
     """
 
     def __init__(self):
-        self.parse('https://www.tutorialspoint.com/html/index.htm')
+        head, chapters, content = self.parse('https://www.tutorialspoint.com/html/index.htm')
+
+        print(chapters, content)
 
     def parse(self, entrypoint):
 
@@ -34,6 +36,6 @@ class PyTTP:
 
         head = Parser.parse(url=entrypoint, el='head')
         chapters = Parser.parse(url=entrypoint, el='chapters')
+        content = Parser.parse(url=entrypoint, el='content')
 
-        print(head)
-        print(chapters)
+        return head, chapters, content

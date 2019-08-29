@@ -1,5 +1,5 @@
 import requests
-import core.config as config
+import core.config
 from contextlib import closing
 
 session = requests.Session()
@@ -11,7 +11,6 @@ def get(url, headers = None):
 
     try:
         with closing(session.get(url)) as response:
-            response.raise_for_status()
             return response
     except requests.exceptions.ConnectionError as errc:
         raise Exception("Please check your internet connection and try again")

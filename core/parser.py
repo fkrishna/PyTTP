@@ -25,7 +25,8 @@ class Parser:
 
         switcher = {
             'head': Parser.__get_head,
-            'chapters': Parser.__get_chapters
+            'chapters': Parser.__get_chapters,
+            'content': Parser.__get_content
         } 
 
         try:
@@ -43,16 +44,16 @@ class Parser:
     
     @staticmethod
     def __get_chapters(soup):
-
-        """
-
-        """
-
         uls = soup.find_all(lambda tag: tag.name == 'ul' and utils.is_iterable(tag.get('class')) and \
-        ' '.join(tag.get('class')) in config.CHAP_HTML_CLASSES) 
+        ' '.join(tag.get('class')) == config.HTML_CLASSES['chapters']) 
         
         if not uls: raise exceptions.ParserError('Not a valid entry point')
-        return uls    
+        return uls   
+    
+    @staticmethod
+    def __get_content(soup):
+        class_ = config.HTML_CLASSES['content']
+        return soup.select(f'div.{class_}')
     
     
   
