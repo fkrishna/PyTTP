@@ -9,6 +9,20 @@ class Parser:
     """ DOM Parser """
 
     @staticmethod
+    def extract_href(html):
+
+        """ Extract the href property of anchor html tag
+
+            Args:
+                html (str): html to be parsed
+            Returns:
+                array[str]: href property
+        """
+
+        soup = bs4.BeautifulSoup(html, 'html.parser') 
+        return [a['href'] for a in soup.find_all('a')]
+
+    @staticmethod
     def parse(url, el):
 
         """ Parse a specific element from HTML document of a given url

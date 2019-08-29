@@ -20,3 +20,7 @@ def is_valid_hostname(url):
 
 def is_iterable(arg):
     return True if type(arg) is list or type(arg) is tuple else False
+
+def type_of(*args):
+    for arg in args:
+        print(type(arg))

@@ -1,4 +1,5 @@
-import core.utils as utils 
+import core.config as config
+import core.utils as utils
 from core.parser import Parser
 
 class PyTTP:
@@ -26,7 +27,7 @@ class PyTTP:
                 from https://www.tutorialspoint.com 
 
             Returns:
-                object: document
+                Array (str): head, chapters
         """
 
         print('parsing the entry point...')
@@ -36,6 +37,5 @@ class PyTTP:
 
         head = Parser.parse(url=entrypoint, el='head')
         chapters = Parser.parse(url=entrypoint, el='chapters')
-        content = Parser.parse(url=entrypoint, el='content')
-
-        return head, chapters, content
+        Parser.resolve_absolute_path(config.ROOT, head)
+        return head, chapters
