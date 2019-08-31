@@ -15,12 +15,39 @@ class Parser:
 
             Args:
                 html (str): html to be parsed
+
             Returns:
-                array[str]: href property
+                (array[str]): all hrefs property from the html
+
         """
 
         soup = bs4.BeautifulSoup(html, 'html.parser') 
         return [a['href'] for a in soup.find_all('a')]
+
+    @staticmethod
+    def resolve_path(html, host):
+
+        """ Prefix the resource path with the host name
+
+            Args:
+                html (str): html to be parsed
+                host (str): the host name (e.g: https://www.tutorialspoint.com)
+
+            Returns:
+                (str): the full path of the ressource
+            
+        """
+
+        soup = bs4.BeautifulSoup(html, 'html.parser') 
+        tags = soup.find_all(['link', 'a', 'img'])
+        for tag in tags:
+            if tag.name == 'img' and tag['src'][0] == '/':
+                tag['src'] = host + tag['src']
+            elif tag.name == 'a' or tag.name == 'link' and tag['href'][0] == '/':
+                tag['href'] = host + tag['href']
+        
+        return str(soup)
+
 
     @staticmethod
     def parse(url, el):
@@ -31,10 +58,11 @@ class Parser:
                 url (str): url of any readable tutorial 
                 from https://www.tutorialspoint.com 
 
-                el (str): element that need to be parsed: (head, chapters, content)
+                el (str): element that need to be parsed: (head, chapters or content)
             
             Returns:
-                Fn: 
+                (str): the elment (head, chapters or content) that was parsed
+                
         """
 
         switcher = {
@@ -50,7 +78,7 @@ class Parser:
         else:
             soup = bs4.BeautifulSoup(response.content, 'html.parser')  
             fn = switcher.get(el) 
-            return fn(soup)
+            return ''.join([str(tag) for tag in fn(soup)])
             
     @staticmethod
     def __get_head(soup):

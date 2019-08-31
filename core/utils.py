@@ -24,3 +24,8 @@ def is_iterable(arg):
 def type_of(*args):
     for arg in args:
         print(type(arg))
+
+def to_str(args):
+    tmp = []
+    for arg in args:
+        tmp.append(str(arg))

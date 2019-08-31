@@ -4,19 +4,30 @@ from core.parser import Parser
 
 class PyTTP:
 
-    """ PyTTP class generate a pdf version 
-    of any readable tutorials from https://www.tutorialspoint.com 
+    """ PyTTP class generate a pdf version of any readable 
+        tutorials from https://www.tutorialspoint.com 
    
-    Attributes:
-        attr1 (str): Description of `attr1`.
-        attr2 (:obj:`int`, optional): Description of `attr2`.
+        Attributes:
+            attr1 (str): Description of `attr1`.
+            attr2 (:obj:`int`, optional): Description of `attr2`.
 
     """
 
     def __init__(self):
-        head, chapters, content = self.parse('https://www.tutorialspoint.com/html/index.htm')
+        pass
 
-        print(chapters, content)
+    @classmethod
+    def createPDF(cls, entrypoint):
+
+        """
+
+        """
+
+        ttp = PyTTP()
+        head, chapters = ttp.parse(entrypoint)
+        urls = Parser.extract_href(chapters)
+        print(head, urls)
+        #urls = [config.ROOT + url for url in urls]    
 
     def parse(self, entrypoint):
 
@@ -27,7 +38,8 @@ class PyTTP:
                 from https://www.tutorialspoint.com 
 
             Returns:
-                Array (str): head, chapters
+                Tuple(str): head, chapters
+
         """
 
         print('parsing the entry point...')
@@ -35,7 +47,12 @@ class PyTTP:
         if not utils.is_valid_hostname(entrypoint):
             raise InvalidHostName('not a valid url')
 
-        head = Parser.parse(url=entrypoint, el='head')
-        chapters = Parser.parse(url=entrypoint, el='chapters')
-        Parser.resolve_absolute_path(config.ROOT, head)
+        head = Parser.resolve_path( 
+            Parser.parse(url=entrypoint, el='head'),
+            config.ROOT
+        )
+        chapters = Parser.resolve_path( 
+            Parser.parse(url=entrypoint, el='chapters'),
+            config.ROOT
+        )
         return head, chapters
