@@ -4,6 +4,8 @@ import core.utils as utils
 import core.config as config
 import core.exceptions as exceptions
 
+from core.document import *
+
 class Parser:
 
     """ DOM Parser """
@@ -50,25 +52,24 @@ class Parser:
 
 
     @staticmethod
-    def parse(url, el):
+    def parse(url, sec):
 
-        """ Parse a specific element from HTML document of a given url
+        """ Parse a specific section from the HTML document of a given url
 
             Args:
-                url (str): url of any readable tutorial 
-                from https://www.tutorialspoint.com 
-
-                el (str): element that need to be parsed: (head, chapters or content)
+                url (str): url of any readable tutorial from https://www.tutorialspoint.com 
+                sec (document.Section Enum): section of the document that need to be parsed: 
+                (document.Section.HEAD, document.Section.TABLE_CONTENTS, document.Section.Content)
             
             Returns:
-                (str): the elment (head, chapters or content) that was parsed
+                (str): the parsed section of the HTML document
                 
         """
 
         switcher = {
-            'head': Parser.__get_head,
-            'chapters': Parser.__get_chapters,
-            'content': Parser.__get_content
+            Section.HEAD: Parser.__get_head,
+            Section.TABLE_CONTENTS: Parser.__get_chapters,
+            Section.CONTENT: Parser.__get_content
         } 
 
         try:
@@ -77,7 +78,7 @@ class Parser:
             print(e)
         else:
             soup = bs4.BeautifulSoup(response.content, 'html.parser')  
-            fn = switcher.get(el) 
+            fn = switcher.get(sec) 
             return ''.join([str(tag) for tag in fn(soup)])
             
     @staticmethod

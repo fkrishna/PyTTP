@@ -1,6 +1,9 @@
 import core.config as config
 import core.utils as utils
+
+from core.document import *
 from core.parser import Parser
+
 
 class PyTTP:
 
@@ -14,7 +17,7 @@ class PyTTP:
     """
 
     def __init__(self):
-        pass
+        self.document = Document()
 
     @classmethod
     def createPDF(cls, entrypoint):
@@ -24,20 +27,16 @@ class PyTTP:
         """
 
         ttp = PyTTP()
-        head, chapters = ttp.parse(entrypoint)
-        urls = Parser.extract_href(chapters)
-        print(head, urls)  
+        ttp.parse(entrypoint)
+        urls = Parser.extract_href(ttp.document.table_contents)
+        print(urls)  
 
     def parse(self, entrypoint):
 
         """ Parse the entry point
 
             Args:
-                entrypoint (str): url of any readable tutorial 
-                from https://www.tutorialspoint.com 
-
-            Returns:
-                Tuple(str): head, chapters
+                entrypoint (str): url of any readable tutorial from https://www.tutorialspoint.com 
 
         """
 
@@ -46,12 +45,12 @@ class PyTTP:
         if not utils.is_valid_hostname(entrypoint):
             raise InvalidHostName('not a valid url')
 
-        head = Parser.resolve_path( 
-            Parser.parse(url=entrypoint, el='head'),
+        self.document.head = Parser.resolve_path( 
+            Parser.parse(url=entrypoint, sec=Section.HEAD),
             config.HOST
         )
-        chapters = Parser.resolve_path( 
-            Parser.parse(url=entrypoint, el='chapters'),
+        self.document.table_contents = Parser.resolve_path( 
+            Parser.parse(url=entrypoint, sec=Section.TABLE_CONTENTS),
             config.HOST
         )
-        return head, chapters
+        

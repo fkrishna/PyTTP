@@ -3,8 +3,10 @@ sys.path.insert(0, '/vagrant/lab/PYTTP')
 
 import unittest
 import core.config as config
+
 from core.parser import Parser
 from core.exceptions import *
+from core.document import *
 
 class ParserTest(unittest.TestCase):
 
@@ -39,14 +41,14 @@ class ParserTest(unittest.TestCase):
         self.assertEqual(path, f'<a href="{config.HOST}/contact.htm">contact</a>')
 
     def test_parseChapters(self):
-        chapters = Parser.parse(url=config.DEFAULT_ENTRYPOINT, el='chapters')
+        chapters = Parser.parse(url=config.DEFAULT_ENTRYPOINT, sec=Section.TABLE_CONTENTS)
         print(chapters[:25] + '...')
         self.assertIsNotNone(chapters)
 
     def test_parseChapters_exceptionThrown(self):
         ep = config.HOST
         print('')
-        self.assertRaises(ParserError, Parser.parse, url=ep, el='chapters')
+        self.assertRaises(ParserError, Parser.parse, url=ep, sec=Section.TABLE_CONTENTS)
 
 
 if __name__ == '__main__':
