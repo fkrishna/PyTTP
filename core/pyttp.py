@@ -26,8 +26,7 @@ class PyTTP:
         ttp = PyTTP()
         head, chapters = ttp.parse(entrypoint)
         urls = Parser.extract_href(chapters)
-        print(head, urls)
-        #urls = [config.ROOT + url for url in urls]    
+        print(head, urls)  
 
     def parse(self, entrypoint):
 
@@ -49,10 +48,10 @@ class PyTTP:
 
         head = Parser.resolve_path( 
             Parser.parse(url=entrypoint, el='head'),
-            config.ROOT
+            config.HOST
         )
         chapters = Parser.resolve_path( 
             Parser.parse(url=entrypoint, el='chapters'),
-            config.ROOT
+            config.HOST
         )
         return head, chapters

@@ -1,9 +1,8 @@
+import core.config as config
 from core.pyttp import PyTTP
 
-entrypoint = 'https://www.tutorialspoint.com/html/index.htm'
-
 def run():
-    PyTTP.createPDF(entrypoint)
+    PyTTP.createPDF(config.DEFAULT_ENTRYPOINT)
 
 if __name__ == "__main__":
     run()
