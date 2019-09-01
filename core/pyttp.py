@@ -10,10 +10,9 @@ class PyTTP:
     """ PyTTP class generate a pdf version of any readable 
         tutorials from https://www.tutorialspoint.com 
    
-        Attributes:
-            attr1 (str): Description of `attr1`.
-            attr2 (:obj:`int`, optional): Description of `attr2`.
-
+        Attrs:
+            document (obj:document): single HTML document of a tutorial
+        
     """
 
     def __init__(self):
@@ -29,7 +28,7 @@ class PyTTP:
         ttp = PyTTP()
         ttp.parse(entrypoint)
         urls = Parser.extract_href(ttp.document.table_contents)
-        print(urls)  
+        ttp.extract(urls)  
 
     def parse(self, entrypoint):
 
@@ -40,7 +39,7 @@ class PyTTP:
 
         """
 
-        print('parsing the entry point...')
+        print(f'parsing the entry point: {entrypoint}')
         
         if not utils.is_valid_hostname(entrypoint):
             raise InvalidHostName('not a valid url')
@@ -53,4 +52,18 @@ class PyTTP:
             Parser.parse(url=entrypoint, sec=Section.TABLE_CONTENTS),
             config.HOST
         )
+
+    def extract(self, urls):
+
+        """ Extracting the content section from each given url
         
+            Args:
+                urls (array[:str]): list of urls to extract the content section from 
+        """
+
+        print('extracting data from host...')
+
+        for url in urls:
+            content = Parser.parse(url=url, sec=Section.CONTENT)
+            print(f'{url}................ OK')
+            self.document.contents.append(content)

@@ -17,10 +17,10 @@ class Document:
         Attrs:
             head (str): HTML metadata
             table_contents (str): tutorial chapters
-            contents (array): main content of each chapter
+            contents (array[:str]): main content of each chapter
     """
 
-    def __init__(self, head=None, table_contents=None, contents=None):
+    def __init__(self, head=None, table_contents=None, contents=[]):
         self.head = head,
         self.table_contents = table_contents,
         self.contents = contents
