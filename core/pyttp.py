@@ -28,7 +28,7 @@ class PyTTP:
         ttp = PyTTP()
         ttp.parse(entrypoint)
         urls = Parser.extract_href(ttp.document.table_contents)
-        ttp.extract(urls)  
+        ttp.extract(urls[:1])  
 
     def parse(self, entrypoint):
 
@@ -65,5 +65,7 @@ class PyTTP:
 
         for url in urls:
             content = Parser.parse(url=url, sec=Section.CONTENT)
-            print(f'{url}................ OK')
+            content = Parser.filter(content)
+            status = 'OK' if content else 'FAILED'
+            print(f'{url} .................. {status}')
             self.document.contents.append(content)

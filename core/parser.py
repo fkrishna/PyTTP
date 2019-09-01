@@ -50,6 +50,35 @@ class Parser:
         
         return str(soup)
 
+    @staticmethod
+    def filter(html):
+
+        """ Remove specific tags or html classes from the given argument
+
+            Args:
+                html (str): html to be parsed
+
+            Return 
+            soup (str): cleaned version of the html argument
+
+        """
+
+        soup = bs4.BeautifulSoup(html, 'html.parser') 
+
+        tags = soup.find_all(config.TAGS_FILTER)
+        for tag in tags:
+            tag.decompose()
+
+        tags = soup.find_all(True, {'class': config.HTMLCLASS_FILTER})
+        for tag in tags:
+            tag.decompose()
+
+        tags = soup.find_all('a', {'href': True})
+        for tag in tags:
+            if tag['href'][0] == '/':
+                del tag['href']
+
+        return str(soup)
 
     @staticmethod
     def parse(url, sec):
@@ -88,14 +117,14 @@ class Parser:
     @staticmethod
     def __get_chapters(soup):
         uls = soup.find_all(lambda tag: tag.name == 'ul' and utils.is_iterable(tag.get('class')) and \
-        ' '.join(tag.get('class')) == config.HTML_CLASSES['chapters']) 
+        ' '.join(tag.get('class')) == config.DOCSEC_CLASSMAP['chapters']) 
         
         if not uls: raise exceptions.ParserError('Not a valid entry point')
         return uls   
     
     @staticmethod
     def __get_content(soup):
-        class_ = config.HTML_CLASSES['content']
+        class_ = config.DOCSEC_CLASSMAP['content']
         return soup.select(f'div.{class_}')
     
     

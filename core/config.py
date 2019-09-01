@@ -4,4 +4,18 @@ HOST = 'https://www.tutorialspoint.com'
 
 DEFAULT_ENTRYPOINT = 'https://www.tutorialspoint.com/html/index.htm'
 
-HTML_CLASSES = { 'chapters': 'toc chapters', 'content': 'tutorial-content' }
+DOCSEC_CLASSMAP = { 'chapters': 'toc chapters', 'content': 'tutorial-content' }
+
+TAGS_FILTER = ['script', 'hr']
+
+HTMLCLASS_FILTER = [
+    'pre-btn', 
+    'print-btn center', 
+    'pdf-btn', 'nxt-btn', 
+    'bottomadtag', 
+    'bottomgooglead', 
+    'tutorial-menu', 
+    'clearer', 
+    'google-bottom-ads', 
+    'space-bottom'
+]
