@@ -58,8 +58,8 @@ class Parser:
             Args:
                 html (str): html to be parsed
 
-            Return 
-            soup (str): cleaned version of the html argument
+            Return: 
+                soup (str): cleaned version of the html argument
 
         """
 

@@ -28,7 +28,9 @@ class PyTTP:
         ttp = PyTTP()
         ttp.parse(entrypoint)
         urls = Parser.extract_href(ttp.document.table_contents)
-        ttp.extract(urls[:1])  
+        ttp.extract(urls[:1])
+        htmldoc = ttp.render()  
+        utils.write_file(htmldoc, 'test.html')
 
     def parse(self, entrypoint):
 
@@ -69,3 +71,25 @@ class PyTTP:
             status = 'OK' if content else 'FAILED'
             print(f'{url} .................. {status}')
             self.document.contents.append(content)
+
+    def render(self):
+
+        """ Render a complete version of the HTML document
+
+            Returns:
+                htmldoc (str): Html document
+        """
+
+        print('rendering html...')
+
+        htmldoc = f'''
+        <html>
+            <head>{ self.document.head }</head>
+            <body>
+                <div>{ self.document.table_contents }</div>
+                <div>{ ''.join(self.document.contents) }</div>
+            </body>
+        </html>
+        '''
+
+        return Parser.resolve_path(htmldoc, config.HOST)

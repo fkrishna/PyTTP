@@ -25,7 +25,9 @@ def type_of(*args):
     for arg in args:
         print(type(arg))
 
-def to_str(args):
-    tmp = []
-    for arg in args:
-        tmp.append(str(arg))
+def write_file(data, filename):
+    with open(filename, 'w') as f:
+        try:
+            f.write(data)
+        except Exception as e:
+            print('An unexpected error has occured')
