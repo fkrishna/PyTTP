@@ -11,7 +11,10 @@ TAGS_FILTER = ['script', 'hr']
 HTMLCLASS_FILTER = [
     'pre-btn', 
     'print-btn center', 
-    'pdf-btn', 'nxt-btn', 
+    'pdf-btn', 
+    'nxt-btn', 
+    'top-ad-heading',
+    'button-borders',
     'bottomadtag', 
     'bottomgooglead', 
     'tutorial-menu', 

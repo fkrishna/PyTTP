@@ -1,7 +1,7 @@
 import weasyprint
 import core.config as config
 import core.utils as utils
-
+from core.renderer import *
 from core.exceptions import *
 from core.document import *
 from core.parser import Parser
@@ -30,9 +30,9 @@ class PyTTP:
         ttp = PyTTP()
         ttp.parse(entrypoint)
         urls = Parser.extract_href(ttp.document.table_contents)
-        ttp.extract(urls)
+        ttp.extract(urls[:10])
         htmldoc = ttp.render()  
-        ttp.write(doc=htmldoc, filename='test.pdf')
+        ttp.write(obj=htmldoc, filename='test.pdf', kind='pdf')
 
     def parse(self, entrypoint):
 
@@ -71,7 +71,7 @@ class PyTTP:
             content = Parser.parse(url=url, sec=Section.CONTENT)
             content = Parser.filter(content)
             status = 'OK' if content else 'FAILED'
-            print(f'{url} ........................{status}')
+            print(f'\t. {url} ........................{status}')
             self.document.contents.append(content)
 
     def render(self):
@@ -84,15 +84,8 @@ class PyTTP:
 
         print('- Rendering document...')
 
-        htmldoc = f'''
-        <html>
-            <head>{ self.document.head }</head>
-            <body>
-                <div>{ self.document.table_contents }</div>
-                <div>{ ''.join(self.document.contents) }</div>
-            </body>
-        </html>
-        '''
+        
+        htmldoc = Renderer.render(self.document)
 
         return Parser.resolve_path(htmldoc, config.HOST, True)
 
