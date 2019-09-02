@@ -1,6 +1,8 @@
+import weasyprint
 import core.config as config
 import core.utils as utils
 
+from core.exceptions import *
 from core.document import *
 from core.parser import Parser
 
@@ -11,7 +13,7 @@ class PyTTP:
         tutorials from https://www.tutorialspoint.com 
    
         Attrs:
-            document (obj:document): single HTML document of a tutorial
+            document (obj:document): single HTML document of a tutorial chapter
         
     """
 
@@ -21,16 +23,16 @@ class PyTTP:
     @classmethod
     def createPDF(cls, entrypoint):
 
-        """
+        """ Factory Method
 
         """
 
         ttp = PyTTP()
         ttp.parse(entrypoint)
         urls = Parser.extract_href(ttp.document.table_contents)
-        ttp.extract(urls[:5])
+        ttp.extract(urls)
         htmldoc = ttp.render()  
-        utils.write_file(htmldoc, 'test.html')
+        ttp.write(doc=htmldoc, filename='test.pdf')
 
     def parse(self, entrypoint):
 
@@ -41,7 +43,7 @@ class PyTTP:
 
         """
 
-        print(f'parsing the entry point: {entrypoint}')
+        print(f'- Parsing the entry point: {entrypoint}')
         
         if not utils.is_valid_hostname(entrypoint):
             raise InvalidHostName('not a valid url')
@@ -63,13 +65,13 @@ class PyTTP:
                 urls (array[:str]): list of urls to extract the content section from 
         """
 
-        print('extracting data from host...')
+        print('- Extracting data from host...')
 
         for url in urls:
             content = Parser.parse(url=url, sec=Section.CONTENT)
             content = Parser.filter(content)
             status = 'OK' if content else 'FAILED'
-            print(f'{url} .................. {status}')
+            print(f'{url} ........................{status}')
             self.document.contents.append(content)
 
     def render(self):
@@ -80,7 +82,7 @@ class PyTTP:
                 htmldoc (str): Html document
         """
 
-        print('rendering html...')
+        print('- Rendering document...')
 
         htmldoc = f'''
         <html>
@@ -93,3 +95,17 @@ class PyTTP:
         '''
 
         return Parser.resolve_path(htmldoc, config.HOST, True)
+
+    def write(self, obj, filename, kind='pdf'):
+
+        """
+
+        """
+
+        print(f'- Writting ({kind}) objects...')
+        
+        if kind == 'pdf':
+            weasyprint.HTML(string=obj).write_pdf(filename)
+        elif kind == 'html':
+            utils.write_file(data=obj, filename=filename)
+ 

@@ -39,7 +39,7 @@ class Parser:
                 (str): the full path of the ressource
             
         """
-
+        
         auth_tags = ['link', 'a', 'img', 'iframe']
         soup = bs4.BeautifulSoup(html, 'html.parser') 
         tags = soup.find_all(auth_tags)
