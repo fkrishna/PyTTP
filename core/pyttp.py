@@ -28,7 +28,7 @@ class PyTTP:
         ttp = PyTTP()
         ttp.parse(entrypoint)
         urls = Parser.extract_href(ttp.document.table_contents)
-        ttp.extract(urls[:1])
+        ttp.extract(urls[:5])
         htmldoc = ttp.render()  
         utils.write_file(htmldoc, 'test.html')
 
@@ -92,4 +92,4 @@ class PyTTP:
         </html>
         '''
 
-        return Parser.resolve_path(htmldoc, config.HOST)
+        return Parser.resolve_path(htmldoc, config.HOST, True)

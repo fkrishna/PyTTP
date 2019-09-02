@@ -24,21 +24,27 @@ class ParserTest(unittest.TestCase):
 
     def test_resolvePath_linkTagArg_returnFullPath(self):
         html = '<link href="/favicon.ico"/>'
-        path = Parser.resolve_path(html, config.HOST)
-        print(path)
-        self.assertEqual(path, f'<link href="{config.HOST}/favicon.ico"/>')
-
-    def test_resolvePath_imgTagArg_returnFullPath(self):
-        html = '<img src="/img.png"/>'
-        path = Parser.resolve_path(html, config.HOST)
-        print(path)
-        self.assertEqual(path, f'<img src="{config.HOST}/img.png"/>')
+        str_ = Parser.resolve_path(html, config.HOST)
+        print(str_)
+        self.assertEqual(str_, f'<link href="{config.HOST}/favicon.ico"/>')
 
     def test_resolvePath_anchorTagArg_returnFullPath(self):
         html = '<a href="/contact.htm">contact</a>'
-        path = Parser.resolve_path(html, config.HOST)
-        print(path)
-        self.assertEqual(path, f'<a href="{config.HOST}/contact.htm">contact</a>')
+        str_ = Parser.resolve_path(html, config.HOST)
+        print(str_)
+        self.assertEqual(str_, f'<a href="{config.HOST}/contact.htm">contact</a>')
+
+    def test_resolvePath_onAnchorTagEmptyHrefAttr_returnOrigin(self):
+        html = '<a href=""></a>'
+        str_ = Parser.resolve_path(html, config.HOST)
+        print(str_)
+        self.assertEqual(str_, html)
+
+    def test_resolvePath_onAnchorTagNoHrefAttr_returnOrigin(self):
+        html = '<a></a>'
+        str_ = Parser.resolve_path(html, config.HOST)
+        print(str_)
+        self.assertEqual(str_, html)
 
     def test_parseChapters(self):
         chapters = Parser.parse(url=config.DEFAULT_ENTRYPOINT, sec=Section.TABLE_CONTENTS)
@@ -49,7 +55,6 @@ class ParserTest(unittest.TestCase):
         ep = config.HOST
         print('')
         self.assertRaises(ParserError, Parser.parse, url=ep, sec=Section.TABLE_CONTENTS)
-
 
 if __name__ == '__main__':
     unittest.main()

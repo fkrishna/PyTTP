@@ -27,7 +27,7 @@ class Parser:
         return [a['href'] for a in soup.find_all('a')]
 
     @staticmethod
-    def resolve_path(html, host):
+    def resolve_path(html, host, d=False):
 
         """ Prefix the resource path with the host name
 
@@ -40,14 +40,23 @@ class Parser:
             
         """
 
+        auth_tags = ['link', 'a', 'img', 'iframe']
         soup = bs4.BeautifulSoup(html, 'html.parser') 
-        tags = soup.find_all(['link', 'a', 'img'])
+        tags = soup.find_all(auth_tags)
+
         for tag in tags:
-            if tag.name == 'img' and tag['src'][0] == '/':
-                tag['src'] = host + tag['src']
-            elif tag.name == 'a' or tag.name == 'link' and tag['href'][0] == '/':
-                tag['href'] = host + tag['href']
-        
+            attr = None
+            
+            if tag.name == 'img' or tag.name == 'iframe':
+                attr = 'src'
+            elif tag.name == 'link' or tag.name == 'a':
+                attr = 'href'
+
+            tagsrc = tag[attr] if attr in tag.attrs.keys() else ''
+
+            if tag.name in auth_tags and tagsrc and tagsrc[0] == '/':
+                tag[attr] = host + tag[attr]
+                    
         return str(soup)
 
     @staticmethod
