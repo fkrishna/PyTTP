@@ -18,7 +18,8 @@ class Renderer:
 
     @classmethod
     def render(cls, document):
-        return f'''<html>
+        return f'''
+        <html>
             <head>
                 { document.meta }
                 { cls.auxmeta }
