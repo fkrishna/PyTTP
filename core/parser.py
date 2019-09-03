@@ -27,7 +27,7 @@ class Parser:
         return [a['href'] for a in soup.find_all('a')]
 
     @staticmethod
-    def resolve_path(html, host, d=False):
+    def resolve_path(html, host):
 
         """ Prefix the resource path with the host name
 
@@ -73,11 +73,10 @@ class Parser:
         """
 
         soup = bs4.BeautifulSoup(html, 'html.parser') 
-
         tags = soup.find_all(config.TAGS_FILTER)
         for tag in tags:
             tag.decompose()
-
+            
         tags = soup.find_all(True, {'class': config.HTMLCLASS_FILTER})
         for tag in tags:
             tag.decompose()
@@ -105,7 +104,7 @@ class Parser:
         """
 
         switcher = {
-            Section.HEAD: Parser.__get_head,
+            Section.META: Parser.__get_meta,
             Section.TABLE_CONTENTS: Parser.__get_chapters,
             Section.CONTENT: Parser.__get_content
         } 
@@ -120,7 +119,7 @@ class Parser:
             return ''.join([str(tag) for tag in fn(soup)])
             
     @staticmethod
-    def __get_head(soup):
+    def __get_meta(soup):
         return soup.find_all(['style', 'link']) 
     
     @staticmethod

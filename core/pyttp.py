@@ -6,7 +6,6 @@ from core.exceptions import *
 from core.document import *
 from core.parser import Parser
 
-
 class PyTTP:
 
     """ PyTTP class generate a pdf version of any readable 
@@ -21,7 +20,7 @@ class PyTTP:
         self.document = Document()
 
     @classmethod
-    def createPDF(cls, entrypoint):
+    def createPDF(cls, entrypoint, kind):
 
         """ Factory Method
 
@@ -30,9 +29,9 @@ class PyTTP:
         ttp = PyTTP()
         ttp.parse(entrypoint)
         urls = Parser.extract_href(ttp.document.table_contents)
-        ttp.extract(urls[:10])
-        htmldoc = ttp.render()  
-        ttp.write(obj=htmldoc, filename='test.pdf', kind='pdf')
+        ttp.extract(urls)
+        doc = ttp.render()  
+        ttp.write(data=doc, kind=kind)
 
     def parse(self, entrypoint):
 
@@ -44,12 +43,14 @@ class PyTTP:
         """
 
         print(f'- Parsing the entry point: {entrypoint}')
-        
+
         if not utils.is_valid_hostname(entrypoint):
             raise InvalidHostName('not a valid url')
 
-        self.document.head = Parser.resolve_path( 
-            Parser.parse(url=entrypoint, sec=Section.HEAD),
+        self.document.title = entrypoint.split('/')[3]
+
+        self.document.meta = Parser.resolve_path( 
+            Parser.parse(url=entrypoint, sec=Section.META),
             config.HOST
         )
         self.document.table_contents = Parser.resolve_path( 
@@ -70,6 +71,7 @@ class PyTTP:
         for url in urls:
             content = Parser.parse(url=url, sec=Section.CONTENT)
             content = Parser.filter(content)
+            content = Parser.resolve_path(content, config.HOST)
             status = 'OK' if content else 'FAILED'
             print(f'\t. {url} ........................{status}')
             self.document.contents.append(content)
@@ -79,26 +81,29 @@ class PyTTP:
         """ Render a complete version of the HTML document
 
             Returns:
-                htmldoc (str): Html document
+                (str): Html document
         """
 
         print('- Rendering document...')
+        return Renderer.render(document=self.document)
 
+    def write(self, data, kind='pdf'):
+
+        """ Writting process of the data to PDF or HTML format
+
+            Args:
+                data (str): data to be processed
+                kind (str): data type
+
+        """
+
+        print(f'- Writting ({kind}) object...')
         
-        htmldoc = Renderer.render(self.document)
-
-        return Parser.resolve_path(htmldoc, config.HOST, True)
-
-    def write(self, obj, filename, kind='pdf'):
-
-        """
-
-        """
-
-        print(f'- Writting ({kind}) objects...')
+        sufix = 'tutorial'
+        filename = f'{self.document.title}-{sufix}.{kind}'
         
         if kind == 'pdf':
-            weasyprint.HTML(string=obj).write_pdf(filename)
+            weasyprint.HTML(string=data).write_pdf(filename)
         elif kind == 'html':
-            utils.write_file(data=obj, filename=filename)
+            utils.write_file(data=data, filename=filename)
  
