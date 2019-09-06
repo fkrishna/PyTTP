@@ -20,7 +20,7 @@ class PyTTP:
         self.document = Document()
 
     @classmethod
-    def createPDF(cls, entrypoint, kind):
+    def createPDF(cls, entrypoint, ext, dest_src):
 
         """ Factory Method
 
@@ -31,7 +31,7 @@ class PyTTP:
         urls = Parser.extract_href(ttp.document.table_contents)
         ttp.extract(urls)
         doc = ttp.render()  
-        ttp.write(data=doc, kind=kind)
+        ttp.write(data=doc, ext=ext)
 
     def parse(self, entrypoint):
 
@@ -87,23 +87,23 @@ class PyTTP:
         print('- Rendering document...')
         return Renderer.render(document=self.document)
 
-    def write(self, data, kind='pdf'):
+    def write(self, data, ext='pdf'):
 
         """ Writting process of the data to PDF or HTML format
 
             Args:
                 data (str): data to be processed
-                kind (str): data type
+                ext (str): data type
 
         """
 
-        print(f'- Writting ({kind}) object...')
+        print(f'- Writting ({ext}) object...')
         
-        sufix = 'tutorial'
-        filename = f'{self.document.title}-{sufix}.{kind}'
+        suffix = 'tutorial'
+        filename = f'{self.document.title}-{suffix}.{ext}'
         
-        if kind == 'pdf':
+        if ext == 'pdf':
             weasyprint.HTML(string=data).write_pdf(filename)
-        elif kind == 'html':
+        elif ext == 'html':
             utils.write_file(data=data, filename=filename)
  
