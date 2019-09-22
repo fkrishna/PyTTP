@@ -12,7 +12,8 @@ class Document:
     
     """ Representation of a single HTML document of a tutorial
     
-        A single HTML document of a tutorial is divided into three sections: (Head, Table Contents, Content) 
+        A single HTML document of a tutorial is divided into three sections: 
+        (Head, Table Contents, Content) 
         
         Attrs:
             meta (str): HTML metadata

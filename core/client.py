@@ -13,6 +13,6 @@ def get(url, headers = None):
         with closing(session.get(url)) as response:
             return response
     except requests.exceptions.ConnectionError as errc:
-        raise Exception("Please check your internet connection and try again")
+        raise Exception("Please check your internet connection and try again", e)
     except requests.exceptions.RequestException as e:
-        raise Exception("An unexpected error has occured, please try again",)
+        raise Exception("An unexpected error has occured, please try again", e)

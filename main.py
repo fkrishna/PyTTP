@@ -44,9 +44,15 @@ def cli_init():
     return parser.parse_args()
 
 if __name__ == "__main__":
-    args = cli_init()
-    print(args)
-    #run()
+    #args = cli_init()
+    cnfg = {
+        'ep': config.DEFAULT_ENTRYPOINT,
+        'dest': '/vagrant/lab/PYTTP/',
+        'ext':'html'
+    }
+    
+    PyTTP.execute(entrypoint=config.DEFAULT_ENTRYPOINT, ext='html')
+    
 
 
     

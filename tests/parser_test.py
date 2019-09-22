@@ -3,58 +3,90 @@ sys.path.insert(0, '/vagrant/lab/PYTTP')
 
 import unittest
 import core.config as config
-
 from core.parser import Parser
 from core.exceptions import *
 from core.document import *
 
 class ParserTest(unittest.TestCase):
 
-    def test_extractHrefProperty_noAnchorTag_returnEmptyArray(self):
-        link = '<html></html>'
-        urls = Parser.extract_href('')
-        print(urls)
-        self.assertEqual(urls, [])
+    '''
+          [MethodName_StateUnderTest_ExpectedBehavior]
+    '''
 
-    def test_extractHrefProperty_withAnchorTag_returnArray(self):
-        html = '<html><a href="/link 1"></a><a href="/link 2"></a></html>'
-        urls = Parser.extract_href(html)
-        print(urls)
-        self.assertIsNotNone(urls)
+    def test_extractHref_anchorTagMissing_returnEmptyList(self):
+        html = '<html></html>'
+        value = Parser.extract_href('')
+        print(value)
+        self.assertEqual(value, [])
 
-    def test_resolvePath_linkTagArg_returnFullPath(self):
-        html = '<link href="/favicon.ico"/>'
-        str_ = Parser.resolve_path(html, config.HOST)
-        print(str_)
-        self.assertEqual(str_, f'<link href="{config.HOST}/favicon.ico"/>')
+    def test_extractHref_anchorTagHrefAttrMissing_returnEmptyList(self):
+        html =  '''<html>
+                    <a>link1</a>
+                    <a>link2</a>
+                </html>'''
+        value = Parser.extract_href(html)
+        print(value)
+        self.assertEqual(value, [])
 
-    def test_resolvePath_anchorTagArg_returnFullPath(self):
-        html = '<a href="/contact.htm">contact</a>'
-        str_ = Parser.resolve_path(html, config.HOST)
-        print(str_)
-        self.assertEqual(str_, f'<a href="{config.HOST}/contact.htm">contact</a>')
+    def test_extractHref_anchorTag_returnList(self):
+        html = '<html><a href="/link1"></a><a href="/link 2"></a></html>'
+        value = Parser.extract_href(html)
+        print(value)
+        self.assertIsNotNone(value)
 
-    def test_resolvePath_onAnchorTagEmptyHrefAttr_returnOrigin(self):
-        html = '<a href=""></a>'
-        str_ = Parser.resolve_path(html, config.HOST)
-        print(str_)
-        self.assertEqual(str_, html)
+    def test_resolvePath_srcAttrElements_returnFullPath(self):
+        html = '<img src="/testing"/>'
+        value = Parser.resolve_path(html, config.HOST)
+        print(value)
+        self.assertEqual(value, f'<img src="{config.HOST}/testing"/>')
+        
+        html = '<iframe src="/testing"></iframe>'
+        value = Parser.resolve_path(html, config.HOST)
+        print(value)
+        self.assertEqual(value, f'<iframe src="{config.HOST}/testing"></iframe>')
+    
+    def test_resolvePath_hrefAttrElements_returnFullPath(self):
+        html = '<a href="/testing"></a>'
+        value = Parser.resolve_path(html, config.HOST)
+        print(value)
+        self.assertEqual(value, f'<a href="{config.HOST}/testing"></a>')
 
-    def test_resolvePath_onAnchorTagNoHrefAttr_returnOrigin(self):
+        html = '<link href="/testing"/>'
+        value = Parser.resolve_path(html, config.HOST)
+        print(value)
+        self.assertEqual(value, f'<link href="{config.HOST}/testing"/>')
+
+    def test_resolvePath_emptyArg_returnOrigin(self):
+        html = ''
+        value = Parser.resolve_path(html, '')
+        print(value)
+        self.assertEqual(value, html)
+
+    def test_resolvePath_attrMissing_returnOrigin(self):
+        html = '<img/>'
+        value = Parser.resolve_path(html, config.HOST)
+        print(value)
+        self.assertEqual(value, html)
+
         html = '<a></a>'
-        str_ = Parser.resolve_path(html, config.HOST)
-        print(str_)
-        self.assertEqual(str_, html)
+        value = Parser.resolve_path(html, config.HOST)
+        print(value)
+        self.assertEqual(value, html)
 
-    def test_parseChapters(self):
-        chapters = Parser.parse(url=config.DEFAULT_ENTRYPOINT, sec=Section.TABLE_CONTENTS)
-        print(chapters[:25] + '...')
-        self.assertIsNotNone(chapters)
+    def test_resolvePath_emptyAttr_returnOrigin(self):
+        html = '<a href=""></a>'
+        value = Parser.resolve_path(html, config.HOST)
+        print(value)
+        self.assertEqual(value, html)
 
-    def test_parseChapters_exceptionThrown(self):
-        ep = config.HOST
+    def test_parseTableContents_validEntryPoint_returnStr(self):
+        value = Parser.parse(url=config.DEFAULT_ENTRYPOINT, sec=Section.TABLE_CONTENTS)
+        print(value[:25] + '...')
+        self.assertIsInstance(value, str)
+
+    def test_parseTableContents_exceptionThrown(self):
         print('')
-        self.assertRaises(ParserError, Parser.parse, url=ep, sec=Section.TABLE_CONTENTS)
+        self.assertRaises(ParserError, Parser.parse, url=config.HOST, sec=Section.TABLE_CONTENTS)
 
 if __name__ == '__main__':
     unittest.main()

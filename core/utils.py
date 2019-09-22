@@ -21,6 +21,17 @@ def is_valid_hostname(url):
 def is_iterable(arg):
     return True if type(arg) is list or type(arg) is tuple else False
 
+def get(config, key):
+
+    '''
+    docstring
+    '''
+    
+    if key not in config:
+        return None
+    
+    return config[key]
+
 def type_of(*args):
     for arg in args:
         print(type(arg))

@@ -8,11 +8,11 @@ from core.parser import Parser
 
 class PyTTP:
 
-    """ PyTTP class generate a pdf version of any readable 
+    """ PyTTP class generate a pdf or html document of any readable 
         tutorials from https://www.tutorialspoint.com 
    
         Attrs:
-            document (obj:document): single HTML document of a tutorial chapter
+            document (obj:core.Document): single HTML document of a tutorial chapter
         
     """
 
@@ -20,7 +20,7 @@ class PyTTP:
         self.document = Document()
 
     @classmethod
-    def createPDF(cls, entrypoint, ext, dest_src):
+    def execute(cls, entrypoint, dest=config.DEF_DEST_SRC, ext=config.DOC_EXTS[0]):
 
         """ Factory Method
 
@@ -97,7 +97,7 @@ class PyTTP:
 
         """
 
-        print(f'- Writting ({ext}) object...')
+        print(f'- Writting ({ext}) document...')
         
         suffix = 'tutorial'
         filename = f'{self.document.title}-{suffix}.{ext}'

@@ -8,48 +8,52 @@ from core.document import *
 
 class Parser:
 
-    """ DOM Parser """
+    """ Tutorial document parser """
 
     @staticmethod
     def extract_href(html):
 
-        """ Extract the href property of anchor html tag
+        """ Extract the href property of an anchor html tag
 
             Args:
                 html (str): html to be parsed
 
             Returns:
-                (array[str]): all hrefs property from the html
+                (array[str]): value of all hrefs property from the html
 
         """
 
+        urls = []
         soup = bs4.BeautifulSoup(html, 'html.parser') 
-        return [a['href'] for a in soup.find_all('a')]
+        for a in soup.find_all('a'):
+            value = a.get('href')
+            if value: urls.append(value)
+
+        return urls
 
     @staticmethod
     def resolve_path(html, host):
 
-        """ Prefix the resource path with the host name
+        """ Prefix the resource path with the hostname
 
             Args:
                 html (str): html to be parsed
-                host (str): the host name (e.g: https://www.tutorialspoint.com)
+                host (str): host name (e.g: https://www.tutorialspoint.com)
 
             Returns:
                 (str): the full path of the ressource
             
         """
         
-        auth_tags = ['link', 'a', 'img', 'iframe']
+        auth_tags = config.ATTRS['href'] + config.ATTRS['src']
         soup = bs4.BeautifulSoup(html, 'html.parser') 
         tags = soup.find_all(auth_tags)
-
+        
         for tag in tags:
             attr = None
-            
-            if tag.name == 'img' or tag.name == 'iframe':
+            if tag.name in config.ATTRS['src']:
                 attr = 'src'
-            elif tag.name == 'link' or tag.name == 'a':
+            elif tag.name in config.ATTRS['href']:
                 attr = 'href'
 
             tagsrc = tag[attr] if attr in tag.attrs.keys() else ''
@@ -91,7 +95,7 @@ class Parser:
     @staticmethod
     def parse(url, sec):
 
-        """ Parse a specific section from the HTML document of a given url
+        """ Parse a specific section of the HTML tutorial document
 
             Args:
                 url (str): url of any readable tutorial from https://www.tutorialspoint.com 
@@ -105,7 +109,7 @@ class Parser:
 
         switcher = {
             Section.META: Parser.__get_meta,
-            Section.TABLE_CONTENTS: Parser.__get_chapters,
+            Section.TABLE_CONTENTS: Parser.__get_table_contents,
             Section.CONTENT: Parser.__get_content
         } 
 
@@ -123,10 +127,9 @@ class Parser:
         return soup.find_all(['style', 'link']) 
     
     @staticmethod
-    def __get_chapters(soup):
+    def __get_table_contents(soup):
         uls = soup.find_all(lambda tag: tag.name == 'ul' and utils.is_iterable(tag.get('class')) and \
         ' '.join(tag.get('class')) == config.DOCSEC_CLASSMAP['chapters']) 
-        
         if not uls: raise exceptions.ParserError('Not a valid entry point')
         return uls   
     
