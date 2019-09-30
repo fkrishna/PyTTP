@@ -1,8 +1,9 @@
 import sys
-sys.path.insert(0, '/vagrant/lab/PYTTP')
+sys.path.insert(0, '/vagrant/lab/PyTTP')
 
 import unittest
-import core.config as config
+import bs4
+import config 
 from core.parser import Parser
 from core.exceptions import *
 from core.document import *
@@ -80,13 +81,13 @@ class ParserTest(unittest.TestCase):
         self.assertEqual(value, html)
 
     def test_parseTableContents_validEntryPoint_returnStr(self):
-        value = Parser.parse(url=config.DEFAULT_ENTRYPOINT, sec=Section.TABLE_CONTENTS)
-        print(value[:25] + '...')
+        value = Parser.parse(url=config.ENTRYPOINT, section=Section.TABLE_CONTENTS)
+        print('')
         self.assertIsInstance(value, str)
 
     def test_parseTableContents_exceptionThrown(self):
         print('')
-        self.assertRaises(ParserError, Parser.parse, url=config.HOST, sec=Section.TABLE_CONTENTS)
+        self.assertRaises(ParserError, Parser.parse, url=config.HOST, section=Section.TABLE_CONTENTS)
 
 if __name__ == '__main__':
     unittest.main()

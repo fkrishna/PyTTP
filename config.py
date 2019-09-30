@@ -1,0 +1,5 @@
+APP_NAME = 'PyTTP'
+APP_DESCRIPTION = 'CLI application that generate a pdf or html document of any readable tutorials from https://www.tutorialspoint.com'
+DEF_DEST_SRC = '/vagrant/lab/PYTTP/'
+ENTRYPOINT = 'https://www.tutorialspoint.com/reactjs/reactjs_component_api.htm'
+HOST = 'https://www.tutorialspoint.com'

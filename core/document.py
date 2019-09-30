@@ -8,21 +8,22 @@ class Section(Enum):
     TABLE_CONTENTS = 2
     CONTENT = 3
 
-class Document:
+class TutorialDocument:
     
-    """ Representation of a single HTML document of a tutorial
+    """ Representation of a single tutorial
     
-        A single HTML document of a tutorial is divided into three sections: 
-        (Head, Table Contents, Content) 
-        
         Attrs:
-            meta (str): HTML metadata
-            table_contents (str): tutorial chapters
-            contents (array[:str]): main content of each chapter
+            name (str): tutorial name
+            meta (list): HTML metadata
+            table_contents (list): tutorial chapters
+            contents (list): main content for each chapters
     """
 
-    def __init__(self, meta=None, title=None, table_contents=None, contents=[]):
+    def __init__(self, name=None, meta=[], table_contents=None, contents=[]):
+        self.name = name
         self.meta = meta
-        self.title = title
         self.table_contents = table_contents
         self.contents = contents
+
+    def __repr__(self):
+        return self.name

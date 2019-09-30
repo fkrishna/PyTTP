@@ -21,12 +21,11 @@ class Renderer:
         return f'''
         <html>
             <head>
-                { document.meta }
                 { cls.auxmeta }
             </head>
             <body>
-                <div data-pyttp-tbc>{ document.table_contents }</div>
-                <div data-pyttp-c>{ ''.join(Renderer.__div_wrapper(document.contents)) }</div>
+                <div>{ document.table_contents }</div>
+                <div>{ ''.join(Renderer.__div_wrapper(document.contents)) }</div>
             </body>
         </html>
         '''
@@ -38,14 +37,3 @@ class Renderer:
             divs.append(f'<div>{content}</div>')
         return divs
 
-
-
-
-
-
-
-    
-
-    
-
-                

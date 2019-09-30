@@ -21,6 +21,13 @@ def is_valid_hostname(url):
 def is_iterable(arg):
     return True if type(arg) is list or type(arg) is tuple else False
 
+def to_str(tags):
+    tags = list(tags)
+    string = ''
+    for tag in tags:
+        string += ''.join(str(tag))
+    return string
+
 def get(config, key):
 
     '''
@@ -41,4 +48,4 @@ def write_file(data, filename):
         try:
             f.write(data)
         except Exception as e:
-            print('An unexpected error has occured')
+            print('An unexpected error has occured', e)

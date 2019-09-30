@@ -1,6 +1,6 @@
 import weasyprint
 import core.config as config
-import core.utils as utils
+from core.utils import * 
 from core.renderer import *
 from core.exceptions import *
 from core.document import *
@@ -12,51 +12,57 @@ class PyTTP:
         tutorials from https://www.tutorialspoint.com 
    
         Attrs:
-            document (obj:core.Document): single HTML document of a tutorial chapter
+            document (obj:core.Document): representation of a single tutorial
         
     """
 
     def __init__(self):
-        self.document = Document()
+        self.tutorial = None
 
     @classmethod
-    def execute(cls, entrypoint, dest=config.DEF_DEST_SRC, ext=config.DOC_EXTS[0]):
+    def execute(cls, entrypoint, dest, ext=config.DOCEXTS[0], debug=False):
 
         """ Factory Method
 
         """
 
         ttp = PyTTP()
+        print(f'- Parsing the entry point: {entrypoint}')
         ttp.parse(entrypoint)
-        urls = Parser.extract_href(ttp.document.table_contents)
+
+        print(f'- Extracting data from host for {ttp.tutorial} tutorial')
+        urls = Parser.extract_href(ttp.tutorial.table_contents)
         ttp.extract(urls)
-        doc = ttp.render()  
-        ttp.write(data=doc, ext=ext)
+
+        print(f'- Rendering object')
+        document = ttp.render() 
+
+        print(f'- Writting ({ext}) document on disk')
+        ttp.write(data=document, ext=ext)
 
     def parse(self, entrypoint):
 
         """ Parse the entry point
 
             Args:
-                entrypoint (str): url of any readable tutorial from https://www.tutorialspoint.com 
+                entrypoint (str): url of any readable tutorial from HOST
 
         """
 
-        print(f'- Parsing the entry point: {entrypoint}')
-
-        if not utils.is_valid_hostname(entrypoint):
+        if not is_valid_hostname(entrypoint):
             raise InvalidHostName('not a valid url')
 
-        self.document.title = entrypoint.split('/')[3]
+        name = entrypoint.split('/')[3]
 
-        self.document.meta = Parser.resolve_path( 
-            Parser.parse(url=entrypoint, sec=Section.META),
+        meta = Parser.resolve_path( 
+            Parser.parse(url=entrypoint, section=Section.META),
             config.HOST
         )
-        self.document.table_contents = Parser.resolve_path( 
-            Parser.parse(url=entrypoint, sec=Section.TABLE_CONTENTS),
+        table_contents = Parser.resolve_path( 
+            Parser.parse(url=entrypoint, section=Section.TABLE_CONTENTS),
             config.HOST
         )
+        self.tutorial = TutorialDocument(name, meta, table_contents)
 
     def extract(self, urls):
 
@@ -66,26 +72,23 @@ class PyTTP:
                 urls (array[:str]): list of urls to extract the content section from 
         """
 
-        print('- Extracting data from host...')
-
         for url in urls:
-            content = Parser.parse(url=url, sec=Section.CONTENT)
-            content = Parser.filter(content)
-            content = Parser.resolve_path(content, config.HOST)
-            status = 'OK' if content else 'FAILED'
-            print(f'\t. {url} ........................{status}')
-            self.document.contents.append(content)
+            content = Parser.parse(url=url, section=Section.CONTENT)
+            print(f'\t. {url}....................')
+            self.tutorial.contents.append(content)
 
     def render(self):
 
-        """ Render a complete version of the HTML document
+        """ Render HTML document of tutorial
 
             Returns:
                 (str): Html document
         """
 
-        print('- Rendering document...')
-        return Renderer.render(document=self.document)
+        document = Renderer.render(document=self.tutorial)
+        document = Parser.filter(document)
+        document = Parser.resolve_path(document, config.HOST)
+        return to_str(document)
 
     def write(self, data, ext='pdf'):
 
@@ -96,14 +99,11 @@ class PyTTP:
                 ext (str): data type
 
         """
-
-        print(f'- Writting ({ext}) document...')
         
-        suffix = 'tutorial'
-        filename = f'{self.document.title}-{suffix}.{ext}'
+        filename = f'{self.tutorial.name}-{config.SUFFIX_NAME}.{ext}'
         
         if ext == 'pdf':
             weasyprint.HTML(string=data).write_pdf(filename)
         elif ext == 'html':
-            utils.write_file(data=data, filename=filename)
+            write_file(data=data, filename=filename)
  

@@ -1,6 +1,8 @@
 import argparse
-import core.config as config
+import config as config
 from core.pyttp import PyTTP
+
+ENV = 'dev'
 
 def cli_init():
     parser = argparse.ArgumentParser(
@@ -45,13 +47,27 @@ def cli_init():
 
 if __name__ == "__main__":
     #args = cli_init()
-    cnfg = {
-        'ep': config.DEFAULT_ENTRYPOINT,
+
+    dev_config = {
+        'entrypoint': config.ENTRYPOINT,
         'dest': '/vagrant/lab/PYTTP/',
-        'ext':'html'
+        'ext':'html', 
+        'debug': True
     }
+
+    prod_config = {
+        'entrypoint': '',
+        'dest': '',
+        'ext':'pdf',
+        'debug': False
+    }
+
+    if ENV == 'prod':
+        config = prod_config
+    else:
+        config = dev_config 
     
-    PyTTP.execute(entrypoint=config.DEFAULT_ENTRYPOINT, ext='html')
+    PyTTP.execute(**config)
     
 
 
