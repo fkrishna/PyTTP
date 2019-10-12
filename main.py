@@ -51,7 +51,7 @@ if __name__ == "__main__":
     dev_config = {
         'entrypoint': config.ENTRYPOINT,
         'dest': '/vagrant/lab/PYTTP/',
-        'ext':'html', 
+        'ext':'pdf', 
         'debug': True
     }
 

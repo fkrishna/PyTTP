@@ -1,5 +1,5 @@
 import requests
-import core.config
+import core.consts
 from contextlib import closing
 
 session = requests.Session()

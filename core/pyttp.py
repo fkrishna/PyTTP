@@ -1,5 +1,6 @@
 import weasyprint
-import core.config as config
+import os
+import core.consts as config
 from core.utils import * 
 from core.renderer import *
 from core.exceptions import *
@@ -32,13 +33,13 @@ class PyTTP:
 
         print(f'- Extracting data from host for {ttp.tutorial} tutorial')
         urls = Parser.extract_href(ttp.tutorial.table_contents)
-        ttp.extract(urls)
+        ttp.extract(urls[0:2])
 
         print(f'- Rendering object')
         document = ttp.render() 
 
         print(f'- Writting ({ext}) document on disk')
-        ttp.write(data=document, ext=ext)
+        ttp.write(data=document, dest=dest, ext=ext)
 
     def parse(self, entrypoint):
 
@@ -52,8 +53,7 @@ class PyTTP:
         if not is_valid_hostname(entrypoint):
             raise InvalidHostName('not a valid url')
 
-        name = entrypoint.split('/')[3]
-
+        
         meta = Parser.resolve_path( 
             Parser.parse(url=entrypoint, section=Section.META),
             config.HOST
@@ -62,48 +62,63 @@ class PyTTP:
             Parser.parse(url=entrypoint, section=Section.TABLE_CONTENTS),
             config.HOST
         )
-        self.tutorial = TutorialDocument(name, meta, table_contents)
 
-    def extract(self, urls):
+        name = entrypoint.split('/')[3]
+        self.tutorial = TutorialDocument(name, meta, table_contents)
+        
+
+    def extract(self, urls = [], debug=True):
 
         """ Extracting the content section from each given url
         
             Args:
-                urls (array[:str]): list of urls to extract the content section from 
+                urls (list): urls
         """
 
         for url in urls:
+            if debug: print(f'\t. {url}....................')
             content = Parser.parse(url=url, section=Section.CONTENT)
-            print(f'\t. {url}....................')
             self.tutorial.contents.append(content)
 
     def render(self):
 
-        """ Render HTML document of tutorial
+        """ Render a single HTML document of tutorial object
 
             Returns:
                 (str): Html document
         """
 
-        document = Renderer.render(document=self.tutorial)
-        document = Parser.filter(document)
-        document = Parser.resolve_path(document, config.HOST)
-        return to_str(document)
+        doc = Renderer.render(document=self.tutorial)
+        doc = Parser.filter(doc)
+        doc = Parser.resolve_path(doc, config.HOST)
+        return to_str(doc)
 
-    def write(self, data, ext='pdf'):
+    def write(self, data, dest, ext='pdf'):
 
         """ Writting process of the data to PDF or HTML format
 
             Args:
                 data (str): data to be processed
-                ext (str): data type
+                ext (str): file type (html or pdf)
 
         """
         
-        filename = f'{self.tutorial.name}-{config.SUFFIX_NAME}.{ext}'
         
-        if ext == 'pdf':
-            weasyprint.HTML(string=data).write_pdf(filename)
-        elif ext == 'html':
-            write_file(data=data, filename=filename)
+        #refactor
+        filename = f'{self.tutorial.name}-{config.SUFFIX_NAME}.{ext}'
+
+        if not os.path.isdir(dest):
+            raise IOError('directory not found')
+
+            
+        print('pk')
+        
+        # if ext == 'pdf':
+        #     try:
+        #         weasyprint.HTML(string=data).write_pdf(filename)
+        #     except Exception as e:
+        #         print(e)
+        #         pass
+        # elif ext == 'html':
+        #     write_file(data=data, filename=filename)
  

@@ -2,7 +2,6 @@ import sys
 sys.path.insert(0, '/vagrant/lab/PyTTP')
 
 import unittest
-import bs4
 import config 
 from core.parser import Parser
 from core.exceptions import *

@@ -1,7 +1,7 @@
 import bs4
 import core.client as client
 import core.utils as utils
-import core.config as config
+import core.consts as config
 import core.exceptions as exceptions
 from core.document import *
 
