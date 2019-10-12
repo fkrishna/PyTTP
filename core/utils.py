@@ -47,5 +47,5 @@ def write_file(data, filename):
     with open(filename, 'w') as f:
         try:
             f.write(data)
-        except Exception as e:
-            print('An unexpected error has occured', e)
+        except:
+            raise

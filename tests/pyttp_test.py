@@ -32,6 +32,33 @@ class PyTTPTest(unittest.TestCase):
     print(doc)
     self.assertIsInstance(doc, Tutorial)
 
+  def test_write_invalidTypeForDataParam_exceptionThrown(self):
+    kwargs = {
+      'data': [],
+      'dest': gconf.DEST,
+      'ext': 'html'
+    }
+    print(type(kwargs['data']))
+    self.assertRaises(TypeError, self.pyttp.write, **kwargs)
+
+  def test_write_invalidDestinationPath_exceptionThrown(self):
+    kwargs = {
+      'data': '<h1>Test</h1>',
+      'dest': '/dir/test/',
+      'ext': 'html'
+    }
+    print(kwargs['dest'])
+    self.assertRaises(IOError, self.pyttp.write, **kwargs)
+
+  def test_write_invalidExtension_exceptionThrown(self):
+    kwargs = {
+      'data': '<h1>Test</h1>',
+      'dest': gconf.DEST,
+      'ext': 'cpp'
+    }
+    print(kwargs['ext'])
+    self.assertRaises(ValueError, self.pyttp.write, **kwargs)
+
   def tearDown(self):
     del self.pyttp
   

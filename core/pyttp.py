@@ -39,7 +39,10 @@ class PyTTP:
         html = ttp.render(tutorial) 
 
         print(f'- Writting ({ext}) document on disk')
-        ttp.write(data=html, dest=dest, ext=ext)
+        try:
+            ttp.write(filename=tutorial.name, data=html, dest=dest, ext=ext)
+        except OSError as err:
+            print(err)
 
     def __parse_tutorial_name(self, entrypoint):
         name = ''
@@ -110,7 +113,7 @@ class PyTTP:
         doc = Parser.resolve_path(doc, config.HOST)
         return doc
 
-    def write(self, data, dest, ext='pdf'):
+    def write(self, data, filename, dest, ext='pdf'):
 
         """ Writting process of the data to PDF or HTML format on disk
 
@@ -121,16 +124,13 @@ class PyTTP:
 
         """
         
+        if type(data) is not str: raise TypeError('data argument must be string')
         if not os.path.isdir(dest): raise IOError('directory not found')
         if ext not in config.DOCEXTS: raise ValueError(f'{ext} is not a valid file extension')
 
-        filename = f'{self.tutorial.name}.{ext}'
+        filename = f'{filename}.{ext}'
         if ext == 'pdf':
-            try:
-                weasyprint.HTML(string=data).write_pdf(filename)
-            except Exception as e:
-                print(e)
-                pass
+            weasyprint.HTML(string=data).write_pdf(filename)
         elif ext == 'html':
             write_file(data=data, filename=filename)
  
