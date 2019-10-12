@@ -33,7 +33,7 @@ class PyTTP:
 
         print(f'- Extracting content from host for {tutorial}')
         urls = Parser.extract_href(tutorial.table_contents)
-        ttp.extract(tutorial, urls)
+        ttp.extract(tutorial, urls{:2})
 
         print(f'- Rendering object')
         html = ttp.render(tutorial) 
@@ -121,8 +121,8 @@ class PyTTP:
 
         """
         
-        if not os.path.isdir(dest):
-            raise IOError('directory not found')
+        if not os.path.isdir(dest): raise IOError('directory not found')
+        if ext not in config.DOCEXTS: raise ValueError(f'{ext} is not a valid file extension')
 
         filename = f'{self.tutorial.name}.{ext}'
         if ext == 'pdf':
