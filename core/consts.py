@@ -1,6 +1,5 @@
 USER_AGENT = 'Mozilla/5.0 (Windows NT x.y; rv:10.0) Gecko/20100101 Firefox/10.0'
 HOST = 'https://www.tutorialspoint.com'
-SUFFIX_NAME = 'tutorial'
 DOCEXTS = ['pdf', 'html']
 HTML_DOCSEC_CLASSMAP = { 'chapters': 'toc chapters', 'content': 'tutorial-content' }
 HTML_TAGS_FILTER = ['script', 'hr']

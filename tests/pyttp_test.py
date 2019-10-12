@@ -26,11 +26,11 @@ class PyTTPTest(unittest.TestCase):
     print(ep)
     self.assertRaises(ParserError, self.pyttp.parse, entrypoint=ep)
 
-  def test_parse_validHostNameValidEntrypoint_tutorialDocumentInstanceCreated(self):
+  def test_parse_validHostNameValidEntrypoint_returnTutorialInstance(self):
     ep = gconf.ENTRYPOINT
-    self.pyttp.parse(ep)
-    print(self.pyttp.tutorial)
-    self.assertIsInstance(self.pyttp.tutorial, TutorialDocument)
+    doc = self.pyttp.parse(ep)
+    print(doc)
+    self.assertIsInstance(doc, Tutorial)
 
   def tearDown(self):
     del self.pyttp

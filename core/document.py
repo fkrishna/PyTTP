@@ -8,7 +8,7 @@ class Section(Enum):
     TABLE_CONTENTS = 2
     CONTENT = 3
 
-class TutorialDocument:
+class Tutorial:
     
     """ Representation of a single tutorial
     
@@ -19,8 +19,10 @@ class TutorialDocument:
             contents (list): main content for each chapters
     """
 
+    suffix_name = 'tutorial'
+
     def __init__(self, name=None, meta=[], table_contents=None, contents=[]):
-        self.name = name
+        self.name = f'{name}-{Tutorial.suffix_name}' if name else Tutorial.suffix_name
         self.meta = meta
         self.table_contents = table_contents
         self.contents = contents
