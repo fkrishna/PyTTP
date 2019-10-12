@@ -33,7 +33,7 @@ class PyTTP:
 
         print(f'- Extracting content from host for {tutorial}')
         urls = Parser.extract_href(tutorial.table_contents)
-        ttp.extract(tutorial, urls{:2})
+        ttp.extract(tutorial, urls[:2])
 
         print(f'- Rendering object')
         html = ttp.render(tutorial) 
