@@ -73,7 +73,6 @@ if __name__ == "__main__":
         config = dev_config 
     
     status = PyTTP.execute(**config)
-    print(status)
     
 
 
