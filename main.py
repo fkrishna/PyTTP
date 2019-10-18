@@ -33,12 +33,12 @@ def cli_init():
     )
 
     parser.add_argument(
-        '-d',
+        '-d'
         '--dest',
         metavar='dest',
         default=config.DEST,
         type=str,
-        help='Overwrite default destination source',
+        help='Overwrite the default destination path',
     )
 
     parser.add_argument(
@@ -54,6 +54,7 @@ def cli_init():
         '-v',
         '--version',
         action='version',
+        version='%(prog)s 1.0',
         help='show program\'s version number and exit',
     )
 
