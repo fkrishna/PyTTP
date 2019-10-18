@@ -3,3 +3,4 @@ APP_DESCRIPTION = 'CLI application that generate a pdf or html document of any r
 DEST = '/vagrant/lab/PYTTP/'
 ENTRYPOINT = 'https://www.tutorialspoint.com/reactjs/reactjs_component_api.htm'
 HOST = 'https://www.tutorialspoint.com'
+DEF_FILE_FORMAT = 'html'

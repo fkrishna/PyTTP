@@ -15,78 +15,78 @@ class ParserTest(unittest.TestCase):
 
     def test_extractHref_anchorTagMissing_returnEmptyList(self):
         html = '<html></html>'
-        value = Parser.extract_href('')
-        print(value)
-        self.assertEqual(value, [])
+        res = Parser.extract_href('')
+        print(res)
+        self.assertEqual(res, [])
 
     def test_extractHref_anchorTagHrefAttrMissing_returnEmptyList(self):
         html =  '''<html>
                     <a>link1</a>
                     <a>link2</a>
                 </html>'''
-        value = Parser.extract_href(html)
-        print(value)
-        self.assertEqual(value, [])
+        res = Parser.extract_href(html)
+        print(res)
+        self.assertEqual(res, [])
 
     def test_extractHref_anchorTag_returnList(self):
         html = '<html><a href="/link1"></a><a href="/link 2"></a></html>'
-        value = Parser.extract_href(html)
-        print(value)
-        self.assertIsNotNone(value)
+        res = Parser.extract_href(html)
+        print(res)
+        self.assertIsNotNone(res)
 
     def test_resolvePath_srcAttrElements_returnFullPath(self):
         html = '<img src="/testing"/>'
-        value = Parser.resolve_path(html, config.HOST)
-        print(value)
-        self.assertEqual(value, f'<img src="{config.HOST}/testing"/>')
+        res = Parser.resolve_path(html, config.HOST)
+        print(res)
+        self.assertEqual(res, f'<img src="{config.HOST}/testing"/>')
         
         html = '<iframe src="/testing"></iframe>'
-        value = Parser.resolve_path(html, config.HOST)
-        print(value)
-        self.assertEqual(value, f'<iframe src="{config.HOST}/testing"></iframe>')
+        res = Parser.resolve_path(html, config.HOST)
+        print(res)
+        self.assertEqual(res, f'<iframe src="{config.HOST}/testing"></iframe>')
     
     def test_resolvePath_hrefAttrElements_returnFullPath(self):
         html = '<a href="/testing"></a>'
-        value = Parser.resolve_path(html, config.HOST)
-        print(value)
-        self.assertEqual(value, f'<a href="{config.HOST}/testing"></a>')
+        res = Parser.resolve_path(html, config.HOST)
+        print(res)
+        self.assertEqual(res, f'<a href="{config.HOST}/testing"></a>')
 
         html = '<link href="/testing"/>'
-        value = Parser.resolve_path(html, config.HOST)
-        print(value)
-        self.assertEqual(value, f'<link href="{config.HOST}/testing"/>')
+        res = Parser.resolve_path(html, config.HOST)
+        print(res)
+        self.assertEqual(res, f'<link href="{config.HOST}/testing"/>')
 
     def test_resolvePath_emptyArg_returnOrigin(self):
         html = ''
-        value = Parser.resolve_path(html, '')
-        print(value)
-        self.assertEqual(value, html)
+        res = Parser.resolve_path(html, '')
+        print(res)
+        self.assertEqual(res, html)
 
     def test_resolvePath_attrMissing_returnOrigin(self):
         html = '<img/>'
-        value = Parser.resolve_path(html, config.HOST)
-        print(value)
-        self.assertEqual(value, html)
+        res = Parser.resolve_path(html, config.HOST)
+        print(res)
+        self.assertEqual(res, html)
 
         html = '<a></a>'
-        value = Parser.resolve_path(html, config.HOST)
-        print(value)
-        self.assertEqual(value, html)
+        res = Parser.resolve_path(html, config.HOST)
+        print(res)
+        self.assertEqual(res, html)
 
     def test_resolvePath_emptyAttr_returnOrigin(self):
         html = '<a href=""></a>'
-        value = Parser.resolve_path(html, config.HOST)
-        print(value)
-        self.assertEqual(value, html)
+        res = Parser.resolve_path(html, config.HOST)
+        print(res)
+        self.assertEqual(res, html)
 
     def test_parseTableContents_validEntryPoint_returnStr(self):
-        value = Parser.parse(url=config.ENTRYPOINT, section=Section.TABLE_CONTENTS)
+        res = Parser.parse(url=config.ENTRYPOINT, section=Section.TABLE_CONTENTS)
         print('')
-        self.assertIsInstance(value, str)
+        self.assertIsInstance(res, str)
 
     def test_parseTableContents_exceptionThrown(self):
         print('')
-        self.assertRaises(ParserError, Parser.parse, url=config.HOST, section=Section.TABLE_CONTENTS)
+        self.assertRaises(EntryPointError, Parser.parse, url=config.HOST, section=Section.TABLE_CONTENTS)
 
 if __name__ == '__main__':
     unittest.main()

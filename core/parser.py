@@ -64,7 +64,7 @@ class Parser:
     @staticmethod
     def filter(html):
 
-        """ Remove specific tags or html classes from the given argument
+        """ Remove tags elements from html
 
             Args:
                 html (str): html to be parsed
@@ -114,7 +114,7 @@ class Parser:
         try:
             response = client.get(url, {'User-Agent': config.USER_AGENT})
         except Exception as e:
-            print(e)
+            pass
         else:
             soup = bs4.BeautifulSoup(response.content, 'html.parser')  
             fn = switcher.get(section) 
@@ -128,7 +128,7 @@ class Parser:
     def __get_table_contents(soup):
         uls = soup.find_all(lambda tag: tag.name == 'ul' and utils.is_iterable(tag.get('class')) and \
         ' '.join(tag.get('class')) == config.HTML_DOCSEC_CLASSMAP['chapters']) 
-        if not uls: raise exceptions.ParserError('Not a valid entry point')
+        if not uls: raise exceptions.EntryPointError('Not a valid entry point')
         return uls   
     
     @staticmethod

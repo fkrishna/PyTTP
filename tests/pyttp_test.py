@@ -19,12 +19,12 @@ class PyTTPTest(unittest.TestCase):
   def test_parse_invalidHostName_exceptionThrown(self):
     ep = 'https://example.com'
     print(ep)
-    self.assertRaises(InvalidHostName, self.pyttp.parse, entrypoint=ep)
+    self.assertRaises(HostNameError, self.pyttp.parse, entrypoint=ep)
 
   def test_parse_validHostNameBadEntrypoint_exceptionThrown(self):
     ep = gconf.HOST
     print(ep)
-    self.assertRaises(ParserError, self.pyttp.parse, entrypoint=ep)
+    self.assertRaises(EntryPointError, self.pyttp.parse, entrypoint=ep)
 
   def test_parse_validHostNameValidEntrypoint_returnTutorialInstance(self):
     ep = gconf.ENTRYPOINT
@@ -36,6 +36,7 @@ class PyTTPTest(unittest.TestCase):
     kwargs = {
       'data': [],
       'dest': gconf.DEST,
+      'filename': 'test',
       'ext': 'html'
     }
     print(type(kwargs['data']))
@@ -44,20 +45,22 @@ class PyTTPTest(unittest.TestCase):
   def test_write_invalidDestinationPath_exceptionThrown(self):
     kwargs = {
       'data': '<h1>Test</h1>',
+      'filename': 'test',
       'dest': '/dir/test/',
       'ext': 'html'
     }
     print(kwargs['dest'])
-    self.assertRaises(IOError, self.pyttp.write, **kwargs)
+    self.assertRaises(NotADirectoryError, self.pyttp.write, **kwargs)
 
   def test_write_invalidExtension_exceptionThrown(self):
     kwargs = {
       'data': '<h1>Test</h1>',
+      'filename': 'test',
       'dest': gconf.DEST,
       'ext': 'cpp'
     }
     print(kwargs['ext'])
-    self.assertRaises(ValueError, self.pyttp.write, **kwargs)
+    self.assertRaises(FileTypeError, self.pyttp.write, **kwargs)
 
   def tearDown(self):
     del self.pyttp

@@ -28,24 +28,10 @@ def to_str(tags):
         string += ''.join(str(tag))
     return string
 
-def get(config, key):
-
-    '''
-    docstring
-    '''
-    
-    if key not in config:
-        return None
-    
-    return config[key]
-
 def type_of(*args):
     for arg in args:
         print(type(arg))
 
 def write_file(data, filename):
     with open(filename, 'w') as f:
-        try:
-            f.write(data)
-        except:
-            raise
+        f.write(data)

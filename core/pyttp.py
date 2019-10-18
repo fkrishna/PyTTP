@@ -23,32 +23,43 @@ class PyTTP:
     @classmethod
     def execute(cls, entrypoint, dest, ext=config.DOCEXTS[0], debug=False):
 
-        """ Factory Method
+        """ Factory Method """
 
-        """
-
-        ttp = PyTTP()
-        print(f'- Parsing the entry point: {entrypoint}')
-        tutorial = ttp.parse(entrypoint)
-
-        print(f'- Extracting content from host for {tutorial}')
-        urls = Parser.extract_href(tutorial.table_contents)
-        ttp.extract(tutorial, urls[:2])
-
-        print(f'- Rendering object')
-        html = ttp.render(tutorial) 
-
-        print(f'- Writting ({ext}) document on disk')
+        err = 0
         try:
+            ttp = PyTTP()
+            print(f'- Parsing the entry point: {entrypoint}')
+            tutorial = ttp.parse(entrypoint)
+
+            print(f'- Extracting content from host for {tutorial}')
+            urls = Parser.extract_href(tutorial.table_contents)
+            ttp.extract(tutorial, urls[:2])
+
+            print(f'- Rendering html')
+            html = ttp.render(tutorial) 
+
+            print(f'- Writting ({ext}) document on disk')
             ttp.write(filename=tutorial.name, data=html, dest=dest, ext=ext)
-        except OSError as err:
-            print(err)
+        except HostNameError as e:
+            err = 1
+            print('error:', e)
+        except EntryPointError as e:
+            err = 1
+            print(f'error:{entrypoint} is not a valid entry point')
+        except NotADirectoryError as e:
+            err = 1
+            print('error:', e)
+        except FileTypeError as e:
+            err = 1
+            print('error:', e)
+        finally:
+            return err
 
     def __parse_tutorial_name(self, entrypoint):
         name = ''
         try:
             name = entrypoint.split('/')[3]
-        except:
+        except IndexError:
             pass
         return name
 
@@ -62,7 +73,7 @@ class PyTTP:
         """
 
         if not is_valid_hostname(entrypoint):
-            raise InvalidHostName('not a valid url')
+            raise HostNameError(f'{entrypoint} is not a valid host name')
 
         meta = Parser.resolve_path( 
             Parser.parse(url=entrypoint, section=Section.META),
@@ -119,18 +130,21 @@ class PyTTP:
 
             Args:
                 data (str): data to be processed
+                filename (str): name of the file
                 dest (str): destination source
                 ext (str): file type (html or pdf)
 
         """
         
         if type(data) is not str: raise TypeError('data argument must be string')
-        if not os.path.isdir(dest): raise IOError('directory not found')
-        if ext not in config.DOCEXTS: raise ValueError(f'{ext} is not a valid file extension')
+        if not os.path.isdir(dest): raise NotADirectoryError(f'couldn\'t locate the following directory:{dest}')
+        if ext not in config.DOCEXTS: raise FileTypeError(f'{ext} is not a valid file format')
 
         filename = f'{filename}.{ext}'
+        filepath = dest + filename if dest[-1] == '/' else f'{dest}/{filename}'
+
         if ext == 'pdf':
-            weasyprint.HTML(string=data).write_pdf(filename)
+            weasyprint.HTML(string=data).write_pdf(filepath)
         elif ext == 'html':
-            write_file(data=data, filename=filename)
+            write_file(data=data, filename=filepath)
  

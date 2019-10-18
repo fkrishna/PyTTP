@@ -2,7 +2,21 @@ import argparse
 import config as config
 from core.pyttp import PyTTP
 
-ENV = 'dev'
+ENV = 'prod'
+
+dev_config = {
+    'entrypoint': config.ENTRYPOINT,
+    'dest': config.DEST,
+    'ext': config.DEF_FILE_FORMAT, 
+    'debug': True
+}
+
+prod_config = {
+    'entrypoint':'',
+    'dest':'',
+    'ext':'',
+    'debug': False
+}
 
 def cli_init():
     parser = argparse.ArgumentParser(
@@ -22,16 +36,16 @@ def cli_init():
         '-d',
         '--dest',
         metavar='dest',
-        default=f'{config.DEF_DEST_SRC}',
+        default=config.DEST,
         type=str,
         help='Overwrite default destination source',
     )
 
     parser.add_argument(
-        '-e',
-        '--exp',
-        metavar='export',
-        default=f'{config.DOC_EXTS[0]}',
+        '-f',
+        '--format',
+        metavar='format',
+        default=config.DEF_FILE_FORMAT,
         type=str,
         help='format of the document to be exported',
     )
@@ -46,32 +60,19 @@ def cli_init():
     return parser.parse_args()
 
 if __name__ == "__main__":
-    #args = cli_init()
-
-    dev_config = {
-        'entrypoint': config.ENTRYPOINT,
-        'dest': '/vagrant/lab/PYTTP/',
-        'ext':'pdf', 
-        'debug': True
-    }
-
-    prod_config = {
-        'entrypoint': '',
-        'dest': '',
-        'ext':'pdf',
-        'debug': False
-    }
-
+    
+    args = cli_init()
+    
     if ENV == 'prod':
+        prod_config['entrypoint'] = args.entrypoint
+        prod_config['dest'] = args.dest
+        prod_config['ext'] = args.format
         config = prod_config
     else:
         config = dev_config 
     
-    PyTTP.execute(**config)
+    status = PyTTP.execute(**config)
+    print(status)
     
-
-
-    
-
 
 
