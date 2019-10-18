@@ -2,20 +2,20 @@
 
 CLI application that generate a pdf or html document of any readable tutorials from https://www.tutorialspoint.com
 
-# Stack
+# Environment
+
+- python v3.6
+- Pipenv for managing package dependencies.
+
+# Lib Dependencies
 
 - weasyprint
 - requests
 - beautifulsoup4
-- python 3
-
-# Installation
-
-...
 
 # Parameters
 
-| Params          | Description                                 | Type                                              |
+| Args            | Description                                 | Type                                              |
 | --------------- | ------------------------------------------- | ------------------------------------------------- |
 | entrypoint      | url of any readable tutorial                | positional                                        |
 | -d or --dest    | Overwrite the default destination path      | optional: default is set to the working directory |
